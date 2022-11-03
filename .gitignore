@@ -130,3 +130,5 @@ dmypy.json
 
 # pycharm stuff
 .idea/
+
+src/local_data/local_data.db

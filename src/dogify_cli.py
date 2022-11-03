@@ -1,4 +1,5 @@
 from inspect import signature
+import re
 
 
 def echo(p):
@@ -11,21 +12,41 @@ def help():
         print(fun, ": takes", num_params, "parameters")
 
 
+def quit():
+    print("closing dogify cli")
+
+
 # associate function names in the CLI with callables
 FUNCTIONS = {
     "echo": echo,
-    "help": help
+    "help": help,
 }
 
 
-def init():
+# pretty fucked up code to isolate quoted strings with spaces as single parameters
+def parse_cmd(cmd):
+    expressions = re.findall("('[^']*')|(\"[^\"]*\")|([^'\" ]+)", cmd)
+    for i in range(len(expressions)):
+        string_single_q, string_double_q, default = expressions[i]
+        string_single_q = string_single_q[1:-1]
+        string_double_q = string_double_q[1:-1]
+        e = list(filter(lambda s: s, [string_single_q, string_double_q, default]))[0]
+        e = e.replace("\\'", "\'")
+        e = e.replace('\\\"', '\"')
+        expressions[i] = e
+    return expressions[0], expressions[1:]
+
+
+def run_cli():
     print("Starting Dogify CLI")
 
     cmd = ""
     while cmd != "quit":
         cmd = input()
-        fun, param = cmd.split()[0], cmd.split()[1:]
+        if not cmd:
+            continue
 
+        fun, param = parse_cmd(cmd)
         # verify function exists
         if fun not in FUNCTIONS.keys():
             print("function", fun, "not found, use 'help' for a list of functions")
@@ -40,14 +61,15 @@ def init():
         # execute the function
         try:
             FUNCTIONS[fun](*param)
-        except:
+        except Exception as e:
             print("an error occurred when running function", fun)
+            print(e)
 
     print("Closing Dogify CLI")
 
 
 if __name__ == "__main__":
-    init()
+    run_cli()
 
 
 def register_functions(name, fun, *d):
