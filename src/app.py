@@ -1,5 +1,8 @@
 import dogify_cli as c
+import audio_player
 import local_data
+import tkinter.filedialog as f
+
 
 def sum(a, b):
     print(a + b)
@@ -20,6 +23,11 @@ c.register_functions(
     "db_insert_song", local_data.insert_song,
     "db_query", local_data.query,
     "db_get_songs", local_data.get_songs,
+    "audio_play_new", audio_player.play_new,
+    "audio_play", audio_player.play,
+    "audio_pause", audio_player.pause,
+    "audio_stop", audio_player.stop,
+    "open_filedialog", lambda: print(f.askopenfilename()),
     "quit", lambda: local_data.close(),
 )
 

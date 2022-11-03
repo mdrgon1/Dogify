@@ -22,3 +22,11 @@ db_query(q)
 db_get_songs(selection, where)
 - fetch data about local song
 - example usage: db_get_songs 'filepath, id' where 'name="yuh"'
+
+open_filedialog()
+- opens file dialog and prints filepath of what you select
+
+audio_play_new(filepath)
+- starts playing file at filepath
+
+audio_play audio_stop audio_pause all do what you'd expect
