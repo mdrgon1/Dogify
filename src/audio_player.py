@@ -1,30 +1,34 @@
-import vlc
+from pygame import mixer as m
 
-player = None
+m.init()
+channel = None
 
 
 def play_new(filepath):
-    global player
+    global channel
     stop()
-    player = vlc.MediaPlayer(filepath)
-    player.play()
+    channel = m.Sound(file=filepath).play()
+    return channel
 
 
 def play():
-    global player
-    if player:
-        player.play()
+    global channel
+    if channel:
+        return channel.unpause()
     else:
         print("no song currently playing")
+        return -1
 
 
 def pause():
-    global player
-    if player:
-        player.pause()
+    global channel
+    if channel:
+        return channel.pause()
+    return 0
 
 
 def stop():
-    global player
-    if player:
-        player.stop()
+    global channel
+    if channel:
+        return channel.stop()
+    return 0

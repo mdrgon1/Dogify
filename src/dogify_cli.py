@@ -60,7 +60,7 @@ def run_cli():
 
         # execute the function
         try:
-            FUNCTIONS[fun](*param)
+            print(FUNCTIONS[fun](*param))
         except Exception as e:
             print("an error occurred when running function", fun)
             print(e)
