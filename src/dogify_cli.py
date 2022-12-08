@@ -7,9 +7,9 @@ def echo(p):
 
 
 def help():
-    for fun in FUNCTIONS.keys():
-        num_params = len(signature(FUNCTIONS[fun]).parameters)
-        print(fun, ": takes", num_params, "parameters")
+    for cmd in CLI_CMDS.keys():
+        num_params = len(signature(CLI_CMDS[cmd]).parameters)
+        print(cmd, ": takes", num_params, "parameters")
 
 
 def quit():
@@ -17,7 +17,7 @@ def quit():
 
 
 # associate function names in the CLI with callables
-FUNCTIONS = {
+CLI_CMDS = {
     "echo": echo,
     "help": help,
 }
@@ -46,23 +46,23 @@ def run_cli():
         if not cmd:
             continue
 
-        fun, param = parse_cmd(cmd)
-        # verify function exists
-        if fun not in FUNCTIONS.keys():
-            print("function", fun, "not found, use 'help' for a list of functions")
+        cmd, param = parse_cmd(cmd)
+        # verify command exists
+        if cmd not in CLI_CMDS.keys():
+            print("command", cmd, "not found, use 'help' for a list of functions")
             continue
 
         # verify correct number of parameters
-        num_params = len(signature(FUNCTIONS[fun]).parameters)
+        num_params = len(signature(CLI_CMDS[cmd]).parameters)
         if num_params != len(param):
-            print("function", fun, "requires", num_params, "parameters, found", len(param))
+            print("command", cmd, "requires", num_params, "parameters, found", len(param))
             continue
 
-        # execute the function
+        # execute the command
         try:
-            print(FUNCTIONS[fun](*param))
+            print(CLI_CMDS[cmd](*param))
         except Exception as e:
-            print("an error occurred when running function", fun)
+            print("an error occurred when running command", cmd)
             print(e)
 
     print("Closing Dogify CLI")
@@ -72,7 +72,7 @@ if __name__ == "__main__":
     run_cli()
 
 
-def register_functions(name, fun, *d):
-    FUNCTIONS[name] = fun
+def register_cmds(name, fun, *d):
+    CLI_CMDS[name] = fun
     if d:
-        register_functions(*d)
+        register_cmds(*d)

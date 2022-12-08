@@ -3,9 +3,8 @@ import sqlite3 as s
 import re
 
 DATABASE_PATH = "local_data/local_data.db"
-connection : s.Connection = None
-cursor : s.Cursor = None
-
+connection: s.Connection
+cursor: s.Cursor
 
 def adapt_list(li):
     if not li:
@@ -146,3 +145,30 @@ def query(q):
 def dump_schema():
     with open("local_data/schema.sql", "w") as f:
         f.writelines(connection.iterdump())
+
+
+FUNCTIONS = [
+    "db_init", init,
+    "db_close", close,
+    "db_run", run_statement,
+    "db_fetchall", lambda : cursor.fetchall(),
+    "db_commit", commit,
+    "db_query", query,
+
+    "db_insert_song", insert_song,
+    "db_del_songs", del_songs,
+    "db_get_songs", get_songs,
+
+    "db_create_col", create_collection,
+    "db_remove_col", remove_collections,
+    "db_get_col", get_collections,
+    "db_insert_into_col", insert_into_collection,
+    "db_remove_from_col", remove_from_collection,
+    "db_get_songs_in_col", get_songs_in_collection
+]
+CLI_FUNCTIONS = [
+    "db_del_songs", lambda ids: del_songs(convert_list(ids)),
+    "db_remove_col", lambda ids: remove_collections(convert_list(ids)),
+    "db_insert_into_col", lambda col_id, ids: insert_into_collection(col_id, convert_list(ids)),
+    "db_remove_from_col", lambda col_id, ids: remove_from_collection(col_id, convert_list(ids)),
+]
