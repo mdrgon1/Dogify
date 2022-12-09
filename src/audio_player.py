@@ -39,15 +39,15 @@ def set_pos(time):
     absolute_pos_offset += get_pos() - time
 
 
-FUNCTIONS = [
-    "audio_play_new", play_new,
-    "audio_play", play,
-    "audio_pause", pause,
-    "audio_stop", stop,
-    "audio_get_pos", get_pos,
-    "audio_set_pos", m.set_pos
-]
+FUNCTIONS = {
+    "audio_play_new": play_new,
+    "audio_play": play,
+    "audio_pause": pause,
+    "audio_stop": stop,
+    "audio_get_pos": get_pos,
+    "audio_set_pos": m.set_pos
+}
 
-CLI_FUNCTIONS = [
-    "audio_set_pos", lambda x: set_pos(float(x))
-]
+CLI_FUNCTIONS = {
+    "audio_set_pos": lambda x: set_pos(float(x))
+}
