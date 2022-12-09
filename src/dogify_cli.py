@@ -72,7 +72,6 @@ if __name__ == "__main__":
     run_cli()
 
 
-def register_cmds(name, fun, *d):
-    CLI_CMDS[name] = fun
-    if d:
-        register_cmds(*d)
+def register_cmds(functions_map: dict):
+    for name, fun in functions_map.items():
+        CLI_CMDS[name] = fun

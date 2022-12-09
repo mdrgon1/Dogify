@@ -10,16 +10,6 @@ from kivy.uix.popup import Popup
 
 #root = Builder.load_file('./gui/gui.kv')
 
-
-FUNCTIONS = {
-    "print": print,
-    "gui_set_main_panel": None,
-    "gui_set_secondary_panel": None,
-    "gui_set_view" : None,
-    "gui_open_modal": None,
-    "gui_close_modal": None,
-}
-
 Builder.load_file("./gui/panel1.kv")
 class panel1(BoxLayout):
     global FUNCTIONS
@@ -36,7 +26,7 @@ class panel2(BoxLayout):
     global FUNCTIONS
 
     def switch(self):
-        FUNCTIONS["gui_open_modal"]('panel1')
+        FUNCTIONS["echo"]('YUH')
 
 
 Builder.load_file("./gui/panel3.kv")
@@ -111,7 +101,7 @@ class ViewLayout(BoxLayout):
         box2.add_widget(SearchBarPanel())
         box2.add_widget(self._mainPanel)
         box1.add_widget(box2)
-        if(self._secondaryPanel):
+        if self._secondaryPanel:
             box1.add_widget(self._secondaryPanel, self._secondaryPanelIdx)
         self.add_widget(box1)
         self.add_widget(PlayBarPanel())
@@ -204,5 +194,21 @@ class Gui(App):
         return RootLayout()
 
 
+def init():
+    return Gui().run()
+
+
+FUNCTIONS = {
+    "print": print,
+    "gui_set_main_panel": None,
+    "gui_set_secondary_panel": None,
+    "gui_set_view" : None,
+    "gui_open_modal": None,
+    "gui_close_modal": None,
+    "gui_init": init
+}
+
+CLI_FUNCTIONS = {}
+
 if __name__ == '__main__':
-    Gui().run()
+    init()
