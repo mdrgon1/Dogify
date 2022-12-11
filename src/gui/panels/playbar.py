@@ -7,14 +7,14 @@ from kivy.lang.builder import Builder
 class PlayButton(Button):
     def on_press(self):
         self.parent.FUNCTIONS['echo']("PLAY")
-        self.parent.FUNCTIONS['audio_play']
+        self.parent.FUNCTIONS['audio_play']()
         self.parent.switch_playpause()
 
 
 class PauseButton(Button):
     def on_press(self):
         self.parent.FUNCTIONS['echo']("PAUSE")
-        self.parent.FUNCTIONS['audio_pause']
+        self.parent.FUNCTIONS['audio_pause']()
         self.parent.switch_playpause()
 
 

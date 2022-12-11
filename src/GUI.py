@@ -185,6 +185,8 @@ class Gui(App):
 
 
 def init():
+    FUNCTIONS['audio_play_new']('C:/Users/intern/Desktop/[YT2mp3.info] - Better Call Saul Theme by Little Barrie Full Orignal Song (320kbps).mp3')
+    FUNCTIONS['audio_pause']()
     return Gui().run()
 
 
@@ -207,6 +209,7 @@ def link_functions(fun_map):
 
 
 CLI_FUNCTIONS = {}
+
 
 if __name__ == '__main__':
     init()
