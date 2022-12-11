@@ -51,3 +51,8 @@ FUNCTIONS = {
 CLI_FUNCTIONS = {
     "audio_set_pos": lambda x: set_pos(float(x))
 }
+
+
+def link_functions(fun_map):
+    global FUNCTIONS
+    FUNCTIONS = fun_map

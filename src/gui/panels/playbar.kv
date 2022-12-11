@@ -1,0 +1,21 @@
+#:import utils kivy.utils
+
+<PlayBarPanel>:
+    size_hint: 1, None
+    height: '35mm'
+    anchor_x: 'center'
+    anchor_y: 'center'
+
+<PlayButton>:
+    background_normal: ''
+    background_color: utils.get_color_from_hex('#ebcf34')
+    size_hint: None, None
+    size: '64px', '64px'
+    text: 'play button'
+
+<PauseButton>:
+    background_normal: ''
+    background_color: utils.get_color_from_hex('#ebcf34')
+    size_hint: None, None
+    size: '64px', '64px'
+    text: 'pause button'

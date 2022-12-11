@@ -14,6 +14,7 @@ APP_FUNCTIONS: dict = {
 
 
 def register_functions(functions_map: dict):
+    global APP_FUNCTIONS
     for name, fun in functions_map.items():
         APP_FUNCTIONS[name] = fun
     for name, fun in APP_FUNCTIONS.items():
@@ -23,12 +24,17 @@ def register_functions(functions_map: dict):
 
 if __name__ == '__main__':
     register_functions(APP_FUNCTIONS)
+
     register_functions(local_data.FUNCTIONS)
     c.register_cmds(local_data.CLI_FUNCTIONS)
     register_functions(audio_player.FUNCTIONS)
     c.register_cmds(audio_player.CLI_FUNCTIONS)
     register_functions(gui.FUNCTIONS)
     c.register_cmds(gui.CLI_FUNCTIONS)
+
+    local_data.link_functions(APP_FUNCTIONS)
+    audio_player.link_functions(APP_FUNCTIONS)
+    gui.link_functions(APP_FUNCTIONS)
 
     gui.init()
     c.run_cli()

@@ -7,15 +7,15 @@ from kivy.uix.widget import Widget
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 from kivy.uix.popup import Popup
-
-#root = Builder.load_file('./gui/gui.kv')
+from gui.panels.playbar import PlayBarPanel
+from gui.panels.searchbar import SearchBarPanel
 
 Builder.load_file("./gui/panel1.kv")
 class panel1(BoxLayout):
     global FUNCTIONS
 
     def switch(self):
-        FUNCTIONS["gui_set_view"](2, 'panel2', 'panel2')
+        FUNCTIONS["gui_set_view"](2, 'panel1', 'panel2')
 
     def close(self):
         FUNCTIONS["gui_close_modal"]()
@@ -38,27 +38,11 @@ class panel3(BoxLayout):
 
 
 PANELS_MAP = {
-    'panel1': panel1,
-    'panel2': panel2
+    'panel1': panel1(),
+    'panel2': panel2(),
+    'playbar': PlayBarPanel(),
+    'searchbar': SearchBarPanel()
 }
-
-
-class PlayBarPanel(BoxLayout):
-    def __init__(self, **kwargs):
-        super(PlayBarPanel, self).__init__(**kwargs)
-        self.size_hint = (1, None)
-        self.height = '35mm'
-        self.add_widget(Label(text='play bar'))
-
-
-class SearchBarPanel(BoxLayout):
-    def __init__(self, **kwargs):
-        super(SearchBarPanel, self).__init__(**kwargs)
-        self.size_hint = (1, None)
-        self.height = '20mm'
-        self.anchor_x = 'center'
-        self.anchor_y = 'center'
-        self.add_widget(TextInput(size_hint=(None, 1), width='100mm', text='search bar', multiline=False))
 
 
 class ViewLayout(BoxLayout):
@@ -89,22 +73,26 @@ class ViewLayout(BoxLayout):
     mainPanel = property(getMainPanel, setMainPanel)
     secondaryPanel = property(getSecondaryPanel, setSecondaryPanel)
 
+
     def __init__(self, **kwargs):
         super(ViewLayout, self).__init__(**kwargs)
 
         FUNCTIONS["gui_set_main_panel"] = self.setMainPanel
         FUNCTIONS["gui_set_secondary_panel"] = self.setSecondaryPanel
 
+        searchbar = PANELS_MAP['searchbar']
+        playbar = PANELS_MAP['playbar']
+
         self.orientation = 'vertical'
         box1 = BoxLayout(orientation='horizontal')
         box2 = BoxLayout(orientation='vertical')
-        box2.add_widget(SearchBarPanel())
+        box2.add_widget(searchbar)
         box2.add_widget(self._mainPanel)
         box1.add_widget(box2)
         if self._secondaryPanel:
             box1.add_widget(self._secondaryPanel, self._secondaryPanelIdx)
         self.add_widget(box1)
-        self.add_widget(PlayBarPanel())
+        self.add_widget(playbar)
 
 
 class View0Layout(ViewLayout):
@@ -144,7 +132,7 @@ class RootLayout(BoxLayout):
         if self._modal:
             raise Exception("attempting to open modal when one already exists")
         self._modal = Popup(auto_dismiss=False)
-        self._modal.add_widget(PANELS_MAP[panel_n]())
+        self._modal.add_widget(PANELS_MAP[panel_n])
         self._modal.open()
 
     def close_modal(self):
@@ -152,27 +140,29 @@ class RootLayout(BoxLayout):
             self._modal.dismiss()
             self._modal = None
 
-    def set_view(self, view_num: int, main_panel_n:str, secondary_panel_n:str=None):
-        for child in self.children:
-            self.remove_widget(child)
+    def set_view(self, view_num: int, main_panel_n: str, secondary_panel_n: str =None):
+        for panel in PANELS_MAP.values():
+            if panel.parent:
+                panel.parent.remove_widget(panel)
+        self.remove_widget(self.children[0])
         match view_num:
             case 0:
                 self.add_widget(View0Layout(
-                    PANELS_MAP[main_panel_n]()
+                    PANELS_MAP[main_panel_n]
                 ))
             case 1:
                 if secondary_panel_n is None:
                     raise Exception("must provide secondary panel for view1")
                 self.add_widget(View1Layout(
-                    PANELS_MAP[main_panel_n](),
-                    PANELS_MAP[secondary_panel_n]()
+                    PANELS_MAP[main_panel_n],
+                    PANELS_MAP[secondary_panel_n]
                 ))
             case 2:
                 if secondary_panel_n is None:
                     raise Exception("must provide secondary panel for view2")
                 self.add_widget(View2Layout(
-                    PANELS_MAP[main_panel_n](),
-                    PANELS_MAP[secondary_panel_n]()
+                    PANELS_MAP[main_panel_n],
+                    PANELS_MAP[secondary_panel_n]
                 ))
 
 
@@ -207,6 +197,14 @@ FUNCTIONS = {
     "gui_close_modal": None,
     "gui_init": init
 }
+
+
+def link_functions(fun_map):
+    global FUNCTIONS
+    FUNCTIONS = fun_map
+    for value in PANELS_MAP.values():
+        type(value).FUNCTIONS = fun_map
+
 
 CLI_FUNCTIONS = {}
 

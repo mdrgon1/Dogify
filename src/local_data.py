@@ -172,3 +172,8 @@ CLI_FUNCTIONS = {
     "db_insert_into_col": lambda col_id, ids: insert_into_collection(col_id, convert_list(ids)),
     "db_remove_from_col": lambda col_id, ids: remove_from_collection(col_id, convert_list(ids)),
 }
+
+
+def link_functions(fun_map):
+    global FUNCTIONS
+    FUNCTIONS = fun_map
