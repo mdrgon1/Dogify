@@ -8,14 +8,22 @@
 
 <PlayButton>:
     background_normal: ''
-    background_color: utils.get_color_from_hex('#ebcf34')
+    background_color: utils.get_color_from_hex('#00000000')
     size_hint: None, None
     size: '64px', '64px'
-    text: 'play button'
+    canvas.after:
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            source: 'gui/img/play_icon.png'
 
 <PauseButton>:
     background_normal: ''
-    background_color: utils.get_color_from_hex('#ebcf34')
+    background_color: utils.get_color_from_hex('#00000000')
     size_hint: None, None
     size: '64px', '64px'
-    text: 'pause button'
+    canvas.after:
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            source: 'gui/img/pause_icon.png'
