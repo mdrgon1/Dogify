@@ -1,0 +1,59 @@
+<CollectionPanel>:
+    BoxLayout:
+        orientation: 'vertical'
+        StencilView:
+            id: img
+            size_hint: 1, 0.5
+            Image:
+                source: root.media
+                size: img.width, img.width / self.image_ratio
+                pos: img.x, img.y - 0.5 * img.width / self.image_ratio
+        Label:
+            size_hint: 1, 0.5
+            text: 'information'
+        RelativeLayout:
+            ScrollView:
+                do_scroll_y: True
+                size: self.size
+                GridLayout:
+                    id: song_container
+                    cols: 1
+                    size_hint_y: None
+                    row_default_height: '64px'
+                    row_force_default: True
+                    padding: (4, 4, 4, 4)
+                    height: self.minimum_height
+            Button:
+                pos_hint: {'right': 0.9, 'left': 0.9}
+                size_hint: None, None
+                size: '120px', '60px'
+                background_normal: 'gui/img/button_light_normal.png'
+                background_down: 'gui/img/button_light_pressed.png'
+                border: (16, 16, 16, 16)
+                on_press: root.add_song()
+                Label:
+                    size: self.parent.size
+                    pos: self.parent.pos
+                    color: (0, 0, 0, 1)
+                    text: 'add song'
+
+
+
+
+<Song>:
+    anchor_x: 'center'
+    anchor_y: 'center'
+    Button:
+        id: button
+        background_normal: 'gui/img/button_dark_normal.png'
+        background_down: 'gui/img/button_dark_pressed.png'
+        border: (32, 32, 32, 32)
+        on_press: root.on_play()
+    BoxLayout:
+        orientation: 'horizontal'
+        Image:
+            size_hint: 0.5, 1
+            source: 'gui/img/play_icon_sm.png'
+        Label:
+            text: root.get_name()
+

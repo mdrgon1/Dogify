@@ -73,5 +73,6 @@ if __name__ == "__main__":
 
 
 def register_cmds(functions_map: dict):
+    global CLI_CMDS
     for name, fun in functions_map.items():
         CLI_CMDS[name] = fun

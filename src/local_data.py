@@ -132,9 +132,14 @@ def get_songs_in_collection(collection_id, selection, where):
     cursor.execute("SELECT song_ids FROM collection WHERE id=?", [int(collection_id)])
     song_ids, = cursor.fetchall()[0]
     if where == '*':
-        return get_songs(selection, "id IN {}".format(tuple(song_ids)))
+        return song_ids
     else:
         return get_songs(selection, "{} AND id IN {}".format(where, tuple(song_ids)))
+
+
+def update_col(set, where):
+    cursor.execute("UPDATE collection SET {} WHERE {}".format(set, where))
+    return commit()
 
 
 def query(q):
@@ -164,8 +169,11 @@ FUNCTIONS: dict = {
     "db_get_col": get_collections,
     "db_insert_into_col": insert_into_collection,
     "db_remove_from_col": remove_from_collection,
-    "db_get_songs_in_col": get_songs_in_collection
+    "db_get_songs_in_col": get_songs_in_collection,
+    "db_update_col": update_col
 }
+
+
 CLI_FUNCTIONS = {
     "db_del_songs": lambda ids: del_songs(convert_list(ids)),
     "db_remove_col": lambda ids: remove_collections(convert_list(ids)),

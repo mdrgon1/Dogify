@@ -17,8 +17,6 @@ def register_functions(functions_map: dict):
     global APP_FUNCTIONS
     for name, fun in functions_map.items():
         APP_FUNCTIONS[name] = fun
-    for name, fun in APP_FUNCTIONS.items():
-        functions_map[name] = fun
     c.register_cmds(functions_map)
 
 
@@ -36,6 +34,7 @@ if __name__ == '__main__':
     audio_player.link_functions(APP_FUNCTIONS)
     gui.link_functions(APP_FUNCTIONS)
 
+    APP_FUNCTIONS['db_init']()
     gui.init()
     c.run_cli()
 

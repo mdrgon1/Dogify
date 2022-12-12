@@ -9,13 +9,14 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.popup import Popup
 from gui.panels.playbar import PlayBarPanel
 from gui.panels.searchbar import SearchBarPanel
+from gui.panels.collection import CollectionPanel
 
 Builder.load_file("./gui/panel1.kv")
 class panel1(BoxLayout):
     global FUNCTIONS
 
     def switch(self):
-        FUNCTIONS["gui_set_view"](2, 'panel1', 'panel2')
+        FUNCTIONS["gui_update_panel"]('playbar')
 
     def close(self):
         FUNCTIONS["gui_close_modal"]()
@@ -41,7 +42,8 @@ PANELS_MAP = {
     'panel1': panel1(),
     'panel2': panel2(),
     'playbar': PlayBarPanel(),
-    'searchbar': SearchBarPanel()
+    'searchbar': SearchBarPanel(),
+    'collection': CollectionPanel()
 }
 
 
@@ -85,7 +87,7 @@ class ViewLayout(BoxLayout):
 
         self.orientation = 'vertical'
         box1 = BoxLayout(orientation='horizontal')
-        box2 = BoxLayout(orientation='vertical')
+        box2 = BoxLayout(orientation='vertical', size_hint=(2, 1))
         box2.add_widget(searchbar)
         box2.add_widget(self._mainPanel)
         box1.add_widget(box2)
@@ -169,8 +171,9 @@ class RootLayout(BoxLayout):
     def __init__(self, **kwargs):
         super(RootLayout, self).__init__(**kwargs)
         self.add_widget(
-            View0Layout(
-                panel1()
+            View1Layout(
+                PANELS_MAP['panel1'],
+                PANELS_MAP['collection']
             )
         )
         self._modal = None
@@ -185,18 +188,28 @@ class Gui(App):
 
 
 def init():
-    FUNCTIONS['audio_play_new']('C:/Users/intern/Desktop/[YT2mp3.info] - Better Call Saul Theme by Little Barrie Full Orignal Song (320kbps).mp3')
+    FUNCTIONS['audio_play_new'](3)
     FUNCTIONS['audio_pause']()
+    select_collection(0)
     return Gui().run()
 
 
+def select_collection(db_id):
+    col = PANELS_MAP['collection']
+    col.set_db_id(db_id)
+
+
+def update_panel(panel_str):
+    PANELS_MAP[panel_str].update()
+
+
 FUNCTIONS = {
-    "print": print,
     "gui_set_main_panel": None,
     "gui_set_secondary_panel": None,
     "gui_set_view" : None,
     "gui_open_modal": None,
     "gui_close_modal": None,
+    "gui_update_panel": update_panel,
     "gui_init": init
 }
 
