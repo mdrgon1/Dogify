@@ -1,7 +1,7 @@
 from kivy.app import App
 from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.layout import Layout
+from kivy.uix.gridlayout import GridLayout
 from kivy.lang import Builder
 from kivy.uix.widget import Widget
 from kivy.uix.button import Button
@@ -12,6 +12,8 @@ from gui.panels.searchbar import SearchBarPanel
 from gui.panels.collection import CollectionPanel
 from gui.panels.song import SongPanel
 from gui.panels.browse import BrowsePanel
+from gui.panels.newsong import NewSongModal
+from gui.panels.newcol import NewColModal
 
 Builder.load_file("./gui/panel1.kv")
 class panel1(BoxLayout):
@@ -48,7 +50,9 @@ PANELS_MAP = {
     'collection': CollectionPanel(),
     'song': SongPanel(),
     'browse': BrowsePanel(),
-    'search_results': BrowsePanel()
+    'searchresults': BrowsePanel(),
+    'newsong': NewSongModal(),
+    'newcol': NewColModal(),
 }
 
 
@@ -135,11 +139,21 @@ class View2Layout(ViewLayout):
 
 class RootLayout(BoxLayout):
 
-    def open_modal(self, panel_n: str):
+    def open_modal(self, panel_n: str, title: str = ''):
         if self._modal:
-            raise Exception("attempting to open modal when one already exists")
-        self._modal = Popup(auto_dismiss=False)
-        self._modal.add_widget(PANELS_MAP[panel_n])
+            self._modal.dismiss()
+        content = PANELS_MAP[panel_n]
+        if content.parent:
+            content.parent.remove_widget(content)
+        self._modal = Popup(
+            title=title,
+            content=content,
+            size_hint=(None, None),
+            size=(600, 400),
+            pos_hint={'top': 0.9},
+            background='gui/img/button_dark_hover.png',
+            border=(16, 16, 16, 16),
+            separator_color=(0.5, 0.5, 0.5, 1.0))
         self._modal.open()
 
     def close_modal(self):
@@ -151,7 +165,8 @@ class RootLayout(BoxLayout):
         for panel in PANELS_MAP.values():
             if panel.parent:
                 panel.parent.remove_widget(panel)
-        self.remove_widget(self.children[0])
+        if self.children:
+            self.remove_widget(self.children[0])
         match view_num:
             case 0:
                 self.add_widget(View0Layout(
@@ -175,12 +190,6 @@ class RootLayout(BoxLayout):
 
     def __init__(self, **kwargs):
         super(RootLayout, self).__init__(**kwargs)
-        self.add_widget(
-            View1Layout(
-                PANELS_MAP['browse'],
-                PANELS_MAP['song']
-            )
-        )
         self._modal = None
         FUNCTIONS["gui_set_view"] = self.set_view
         FUNCTIONS["gui_open_modal"] = self.open_modal
@@ -200,11 +209,12 @@ def init():
 
     FUNCTIONS['audio_play_new'](3)
     FUNCTIONS['audio_pause']()
-    select_song(3)
-    PANELS_MAP['browse'].song_query = '*'
-    PANELS_MAP['browse'].col_query = '*'
+#    select_song(3)
+    PANELS_MAP['browse'].update()
 
-    return Gui().run()
+    FUNCTIONS['gui_set_view'](0, 'browse')
+
+    Gui().run()
 
 
 def select_collection(db_id):
@@ -222,6 +232,14 @@ def select_song(db_id):
 def update_panel(panel_str):
     PANELS_MAP[panel_str].update()
 
+
+def bind_results_callback(song=None, col=None):
+    if song:
+        PANELS_MAP['searchresults'].bind_on_click_song(song)
+    if col:
+        PANELS_MAP['searchresults'].bind_on_click_col(col)
+
+
 FUNCTIONS = {
     "gui_set_main_panel": None,
     "gui_set_secondary_panel": None,
@@ -232,6 +250,7 @@ FUNCTIONS = {
     "gui_init": init,
     "gui_select_collection": select_collection,
     "gui_select_song": select_song,
+    "gui_bind_results_callback": bind_results_callback
 }
 
 

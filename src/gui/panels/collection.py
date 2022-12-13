@@ -32,6 +32,16 @@ class CollectionPanel(BoxLayout):
         self.media, = self.FUNCTIONS['db_get_col']('media_path', 'id={}'.format(db_id))[0]
         print(self.ids.song_container.children)
 
+    def click_add_song(self):
+        self.FUNCTIONS['gui_update_panel']('searchresults')
+        self.FUNCTIONS['gui_bind_results_callback'](song=self.add_song)
+        self.FUNCTIONS['gui_open_modal']('searchresults')
+
+    def add_song(self, song_id):
+        self.FUNCTIONS['db_insert_into_col'](self.db_id, [song_id])
+        self.FUNCTIONS['gui_close_modal']()
+        self.FUNCTIONS['gui_update_panel']('collection')
+
     def update(self):
         self.set_db_id(self.db_id)
 

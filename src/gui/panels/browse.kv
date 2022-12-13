@@ -8,6 +8,10 @@
             pos: self.x + 16, self.y
     BoxLayout:
         orientation: 'vertical'
+        size_hint: None, 1
+        width: self.parent.width
+        pos: self.parent.pos
+
         RelativeLayout:
             ScrollView:
                 do_scroll_y: True
@@ -21,6 +25,41 @@
                     spacing: 50
                     padding: 50
                     height: self.minimum_height
+    AnchorLayout:
+        anchor_x: 'right'
+        anchor_y: 'bottom'
+        size_hint: 1, 1
+        pos: self.parent.pos
+        padding: (46, 30)
+        BoxLayout:
+            orientation: 'vertical'
+            spacing: 20
+            size_hint: None, None
+            size: self.minimum_size
+            Button:
+                size_hint: None, None
+                size: '120px', '60px'
+                background_normal: 'gui/img/button_light_normal.png'
+                background_down: 'gui/img/button_light_pressed.png'
+                border: (16, 16, 16, 16)
+                on_press: root.new_song()
+                Label:
+                    size: self.parent.size
+                    pos: self.parent.pos
+                    color: (0, 0, 0, 1)
+                    text: 'add song'
+            Button:
+                size_hint: None, None
+                size: '180px', '60px'
+                background_normal: 'gui/img/button_light_normal.png'
+                background_down: 'gui/img/button_light_pressed.png'
+                border: (16, 16, 16, 16)
+                on_press: root.new_collection()
+                Label:
+                    size: self.parent.size
+                    pos: self.parent.pos
+                    color: (0, 0, 0, 1)
+                    text: 'add collection'
 
 
 <Item>:
@@ -53,6 +92,9 @@
         background_color: 0, 0, 0, 0
         Label:
             color: 0, 0, 0
-            pos: self.parent.pos
-            size: self.parent.size
+            pos: self.parent.x + 10, self.parent.y + 10
+            size: self.parent.width - 20, self.parent.height - 20
+            text_size: self.size
+            halign: 'center'
+            valign: 'center'
             text: root.text

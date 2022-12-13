@@ -1,0 +1,56 @@
+<NewColModal>
+    BoxLayout:
+        padding: 20
+        spacing: 20
+        orientation: 'vertical'
+        BoxLayout:
+            padding: 20
+            spacing: 20
+            orientation: 'horizontal'
+            TextInput:
+                pos_hint: {'center_y': 0.5}
+                size_hint: 1, None
+                height: '70sp'
+
+                id: media_filepath_input
+                text: root.media_filepath
+            Button:
+                size_hint: None, None
+                size: 130, 50
+                pos_hint: {'center_y': 0.5}
+                background_normal: 'gui/img/button_light_normal.png'
+                border: (16, 16, 16, 16)
+                on_press: root.browse_files()
+                Label:
+                    pos: self.parent.pos
+                    size: self.parent.size
+                    color: 0, 0, 0, 1
+                    text: 'browse images'
+        BoxLayout:
+            padding: 20
+            spacing: 20
+            orientation: 'horizontal'
+            Label:
+                text_size: self.size
+                pos_hint: {'center_y': 0.5}
+                size_hint: None, None
+                size: '80sp', '20sp'
+                text: 'Name:'
+            TextInput:
+                id: name_input
+                pos_hint: {'center_y': 0.5}
+                size_hint: 1, None
+                height: '30sp'
+                text: root.name
+        Button:
+            size_hint: None, None
+            size: 90, 50
+            pos_hint: {'center_y': 0.5, 'right': 1}
+            background_normal: 'gui/img/button_light_normal.png'
+            border: (16, 16, 16, 16)
+            on_press: root.submit()
+            Label:
+                pos: self.parent.pos
+                size: self.parent.size
+                color: 0, 0, 0, 1
+                text: 'submit'

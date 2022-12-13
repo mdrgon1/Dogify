@@ -1,38 +1,42 @@
-from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.anchorlayout import AnchorLayout
+from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.button import Button
 from kivy.lang.builder import Builder
 from kivy.properties import ListProperty, NumericProperty, StringProperty, ColorProperty
 from kivy.core.window import Window
 
 Builder.load_file("gui/panels/browse.kv")
-class BrowsePanel(BoxLayout):
+class BrowsePanel(FloatLayout):
 
     FUNCTIONS = {}
     song_items = ListProperty([])
     col_items = ListProperty([])
-    song_query = StringProperty('')
-    col_query = StringProperty('')
+    song_query = StringProperty('*')
+    col_query = StringProperty('*')
 
     def on_song_query(self, instance, query):
         self.song_query = query
-        song_ids = []
-        for song_id, in self.FUNCTIONS['db_get_songs']('id', query):
-            song_ids.append(song_id)
-        self.song_items = (Item(self.FUNCTIONS, song_id, 'song') for song_id in song_ids)
         self.update()
 
     def on_col_query(self, instance, query):
         self.col_query = query
-        col_ids = []
-        for col_id, in self.FUNCTIONS['db_get_col']('id', query):
-            col_ids.append(col_id)
-        self.col_items = (Item(self.FUNCTIONS, col_id, 'collection') for col_id in col_ids)
         self.update()
 
     def update(self):
+
+        song_ids = []
+        for song_id, in self.FUNCTIONS['db_get_songs']('id', self.song_query):
+            song_ids.append(song_id)
+        self.song_items = (Item(self.FUNCTIONS, song_id, 'song') for song_id in song_ids)
+        col_ids = []
+
+        for col_id, in self.FUNCTIONS['db_get_col']('id', self.col_query):
+            col_ids.append(col_id)
+        self.col_items = (Item(self.FUNCTIONS, col_id, 'collection') for col_id in col_ids)
+
         container = self.ids.item_container
         container.clear_widgets()
+
         for item in self.song_items + self.col_items:
             container.add_widget(item)
 
@@ -57,6 +61,12 @@ class BrowsePanel(BoxLayout):
         else:
             for song in self.song_items:
                 song.on_click = bind
+
+    def new_song(self):
+        self.FUNCTIONS['gui_open_modal']('newsong', 'New Song')
+
+    def new_collection(self):
+        self.FUNCTIONS['gui_open_modal']('newcol', 'New Collection')
 
     def __init__(self, **kwargs):
         super(BrowsePanel, self).__init__(**kwargs)
@@ -105,14 +115,11 @@ class Item(AnchorLayout):
                 self.color = (1, 1, 1)
             self.media_path = self.get_media()
 
-    def on_click_default(self):
+    def on_click_default(self, db_id):
         if self.type == 'collection':
             self.FUNCTIONS['gui_select_collection'](self.db_id)
         elif self.type == 'song':
             self.FUNCTIONS['gui_select_song'](self.db_id)
-
-    def on_click(self, db_id):
-        self.on_click_default()
 
     def __init__(self, FUNCTIONS={}, db_id=-1, type='', **kwargs):
         self.FUNCTIONS = FUNCTIONS
@@ -120,6 +127,7 @@ class Item(AnchorLayout):
         self.hovered = False
         self.type = type
         self.media_path = self.get_media()
+        self.on_click = self.on_click_default
         if type == 'collection':
             self.rad = 30
         elif type == 'song':
