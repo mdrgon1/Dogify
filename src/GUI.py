@@ -11,6 +11,7 @@ from gui.panels.playbar import PlayBarPanel
 from gui.panels.searchbar import SearchBarPanel
 from gui.panels.collection import CollectionPanel
 from gui.panels.song import SongPanel
+from gui.panels.browse import BrowsePanel
 
 Builder.load_file("./gui/panel1.kv")
 class panel1(BoxLayout):
@@ -45,7 +46,9 @@ PANELS_MAP = {
     'playbar': PlayBarPanel(),
     'searchbar': SearchBarPanel(),
     'collection': CollectionPanel(),
-    'song': SongPanel()
+    'song': SongPanel(),
+    'browse': BrowsePanel(),
+    'search_results': BrowsePanel()
 }
 
 
@@ -173,8 +176,8 @@ class RootLayout(BoxLayout):
     def __init__(self, **kwargs):
         super(RootLayout, self).__init__(**kwargs)
         self.add_widget(
-            View2Layout(
-                PANELS_MAP['panel1'],
+            View1Layout(
+                PANELS_MAP['browse'],
                 PANELS_MAP['song']
             )
         )
@@ -184,32 +187,40 @@ class RootLayout(BoxLayout):
         FUNCTIONS["gui_close_modal"] = self.close_modal
 
 
+root = None
 class Gui(App):
     def build(self):
-        return RootLayout()
+        return root
 
 
 def init():
 
+    global root
+    root = RootLayout()
+
     FUNCTIONS['audio_play_new'](3)
     FUNCTIONS['audio_pause']()
     select_song(3)
+    PANELS_MAP['browse'].song_query = '*'
+    PANELS_MAP['browse'].col_query = '*'
+
     return Gui().run()
 
 
 def select_collection(db_id):
     PANELS_MAP['collection'].set_db_id(db_id)
     FUNCTIONS['gui_update_panel']('collection')
+    FUNCTIONS['gui_set_view'](2, 'browse', 'collection')
 
 
 def select_song(db_id):
     PANELS_MAP['song'].set_db_id(db_id)
     FUNCTIONS['gui_update_panel']('song')
+    FUNCTIONS['gui_set_view'](1, 'browse', 'song')
 
 
 def update_panel(panel_str):
     PANELS_MAP[panel_str].update()
-
 
 FUNCTIONS = {
     "gui_set_main_panel": None,
@@ -220,7 +231,7 @@ FUNCTIONS = {
     "gui_update_panel": update_panel,
     "gui_init": init,
     "gui_select_collection": select_collection,
-    "gui_select_song": select_song
+    "gui_select_song": select_song,
 }
 
 

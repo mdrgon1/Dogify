@@ -31,6 +31,11 @@ class SongPanel(BoxLayout):
         name, = self.FUNCTIONS['db_get_songs']('name', 'id={}'.format(self.db_id))[0]
         return name
 
+    def on_play(self):
+        self.FUNCTIONS['audio_play_new'](self.db_id)
+        self.FUNCTIONS['gui_update_panel']('playbar')
+        self.FUNCTIONS['gui_select_song'](self.db_id)
+
     def update(self):
         self.set_db_id(self.db_id)
         self.name = self.get_name()

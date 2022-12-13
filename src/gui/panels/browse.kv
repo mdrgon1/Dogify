@@ -1,31 +1,19 @@
-<SongPanel>:
+<BrowsePanel>:
+    canvas.before:
+        Color:
+            rgb: 0.05, 0.05, 0.05
+        RoundedRectangle:
+            radius: [(40, 40), (40, 40), (0, 0), (0, 0)]
+            size: self.width - 32, self.height - 16
+            pos: self.x + 16, self.y
     BoxLayout:
         orientation: 'vertical'
-        BoxLayout:
-            orientation: 'horizontal'
-            size_hint: 1, 0.5
-            Button:
-                size_hint: None, None
-                size: 64, 32
-                pos_hint: {'center_y': 0.5}
-                background_color: 0, 0, 0, 0
-                on_press: root.on_play()
-                Image:
-                    size: 32, 32
-                    pos: self.parent.x + 16, self.parent.y
-                    source: 'gui/img/play_icon_sm.png'
-            Label:
-                text: root.name
-        Label:
-            size_hint: 1, None
-            height: 20
-            text: 'Found in these collections:'
         RelativeLayout:
             ScrollView:
                 do_scroll_y: True
                 size: self.size
                 GridLayout:
-                    id: song_container
+                    id: item_container
                     cols: max(int(self.width / 250), 1)
                     size_hint_y: None
                     row_default_height: 250 - 100
@@ -35,7 +23,7 @@
                     height: self.minimum_height
 
 
-<Collection>:
+<Item>:
     anchor_x: 'center'
     anchor_y: 'center'
     size_hint: None, 1
@@ -45,7 +33,7 @@
         RoundedRectangle:
             pos: self.pos
             size: self.size
-            radius: [(20, 20)] * 4
+            radius: [(root.rad, root.rad)] * 4
         StencilUse
         Color:
             rgb: root.color
@@ -61,7 +49,7 @@
         StencilPop
     Button:
         id: button
-        on_press: root.on_click()
+        on_press: root.on_click(root.db_id)
         background_color: 0, 0, 0, 0
         Label:
             color: 0, 0, 0

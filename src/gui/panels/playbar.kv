@@ -1,6 +1,17 @@
 #:import utils kivy.utils
 
 <PlayBarPanel>:
+    canvas.before:
+        Color:
+            rgb: 0.1, 0.1, 0.1
+        Rectangle:
+            size: self.size
+            pos: self.pos
+        Color:
+            rgb: 0.05, 0.05, 0.05
+        Rectangle:
+            size: self.width, self.height - 4
+            pos: self.x, self.y + 2
     size_hint: 1, None
     height: '35mm'
     anchor_x: 'center'

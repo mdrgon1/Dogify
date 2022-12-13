@@ -61,7 +61,6 @@ class Song(AnchorLayout):
     def on_play(self):
         self.FUNCTIONS['audio_play_new'](self.db_id)
         self.FUNCTIONS['gui_update_panel']('playbar')
-        self.FUNCTIONS['gui_select_song'](self.db_id)
 
     def __init__(self, FUNCTIONS, db_id, **kwargs):
         self.FUNCTIONS = FUNCTIONS
