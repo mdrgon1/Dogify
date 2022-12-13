@@ -116,6 +116,7 @@ def insert_into_collection(collection_id, ids):
     cursor.execute("SELECT song_ids FROM collection WHERE id=?", [collection_id])
     collection, = cursor.fetchall()[0]
     collection = collection + ids
+    collection = [*set(collection)] # remove duplicates
     cursor.execute("UPDATE collection SET song_ids = ? WHERE id = ?", [collection, collection_id])
     return commit()
 

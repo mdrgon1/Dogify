@@ -27,8 +27,8 @@ class CollectionPanel(BoxLayout):
 
     def set_db_id(self, db_id):
         self.db_id = db_id
-        for song_id in self.FUNCTIONS['db_get_songs_in_col'](db_id, 'id', '*'):
-            self.add_song(song_id)
+        ids = [song_id for song_id in self.FUNCTIONS['db_get_songs_in_col'](db_id, 'id', '*')]
+        self.songs = [Song(self.FUNCTIONS, song_id) for song_id in ids]
         self.media, = self.FUNCTIONS['db_get_col']('media_path', 'id={}'.format(db_id))[0]
         print(self.ids.song_container.children)
 
@@ -61,6 +61,7 @@ class Song(AnchorLayout):
     def on_play(self):
         self.FUNCTIONS['audio_play_new'](self.db_id)
         self.FUNCTIONS['gui_update_panel']('playbar')
+        self.FUNCTIONS['gui_select_song'](self.db_id)
 
     def __init__(self, FUNCTIONS, db_id, **kwargs):
         self.FUNCTIONS = FUNCTIONS

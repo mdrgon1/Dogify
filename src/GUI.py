@@ -10,6 +10,7 @@ from kivy.uix.popup import Popup
 from gui.panels.playbar import PlayBarPanel
 from gui.panels.searchbar import SearchBarPanel
 from gui.panels.collection import CollectionPanel
+from gui.panels.song import SongPanel
 
 Builder.load_file("./gui/panel1.kv")
 class panel1(BoxLayout):
@@ -43,7 +44,8 @@ PANELS_MAP = {
     'panel2': panel2(),
     'playbar': PlayBarPanel(),
     'searchbar': SearchBarPanel(),
-    'collection': CollectionPanel()
+    'collection': CollectionPanel(),
+    'song': SongPanel()
 }
 
 
@@ -171,9 +173,9 @@ class RootLayout(BoxLayout):
     def __init__(self, **kwargs):
         super(RootLayout, self).__init__(**kwargs)
         self.add_widget(
-            View1Layout(
+            View2Layout(
                 PANELS_MAP['panel1'],
-                PANELS_MAP['collection']
+                PANELS_MAP['song']
             )
         )
         self._modal = None
@@ -188,15 +190,21 @@ class Gui(App):
 
 
 def init():
+
     FUNCTIONS['audio_play_new'](3)
     FUNCTIONS['audio_pause']()
-    select_collection(0)
+    select_song(3)
     return Gui().run()
 
 
 def select_collection(db_id):
-    col = PANELS_MAP['collection']
-    col.set_db_id(db_id)
+    PANELS_MAP['collection'].set_db_id(db_id)
+    FUNCTIONS['gui_update_panel']('collection')
+
+
+def select_song(db_id):
+    PANELS_MAP['song'].set_db_id(db_id)
+    FUNCTIONS['gui_update_panel']('song')
 
 
 def update_panel(panel_str):
@@ -210,7 +218,9 @@ FUNCTIONS = {
     "gui_open_modal": None,
     "gui_close_modal": None,
     "gui_update_panel": update_panel,
-    "gui_init": init
+    "gui_init": init,
+    "gui_select_collection": select_collection,
+    "gui_select_song": select_song
 }
 
 

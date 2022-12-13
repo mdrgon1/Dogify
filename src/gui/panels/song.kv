@@ -1,0 +1,54 @@
+<SongPanel>:
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            size_hint: 1, 0.5
+            text: root.name
+        RelativeLayout:
+            ScrollView:
+                do_scroll_y: True
+                size: self.size
+                GridLayout:
+                    id: song_container
+                    cols: max(int(self.width / 250), 1)
+                    size_hint_y: None
+                    row_default_height: 250 - 100
+                    row_force_default: True
+                    spacing: 50
+                    padding: 50
+                    height: self.minimum_height
+
+
+<Collection>:
+    anchor_x: 'center'
+    anchor_y: 'center'
+    size_hint: None, 1
+    size: self.height, self.height
+    canvas.before:
+        StencilPush
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [(20, 20)] * 4
+        StencilUse
+        Color:
+            rgb: root.color
+        Rectangle:
+            pos: self.x, self.y + 0.5 * (self.height - self.width)
+            size: self.width, self.width
+            source: root.media_path
+        StencilUnUse
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [(20, 20)] * 4
+        StencilPop
+    Button:
+        id: button
+        on_press: root.on_click()
+        background_color: 0, 0, 0, 0
+        Label:
+            color: 0, 0, 0
+            pos: self.parent.pos
+            size: self.parent.size
+            text: root.text
